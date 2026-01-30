@@ -1,0 +1,48 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using Warehouse.Domain.Identity
+@inject SignInManager<WarehouseApplicationUser> SignInManager
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="container py-5">
+    @if (SignInManager.IsSignedIn(User))
+    {
+        @* --- WHAT LOGGED IN USERS SEE --- *@
+        <div class="p-5 mb-4 bg-light rounded-3 shadow-sm">
+            <h1 class="display-4 fw-bold text-primary">Dashboard</h1>
+            <p class="fs-4">Welcome back! Use the cards below to manage the warehouse.</p>
+        </div>
+
+        @* Add your Role-based cards here (Management, Distribution, etc.) *@
+    }
+    else
+    {
+        @* --- THE "BEAUTIFIED" LANDING PAGE FOR LOGOUT/GUESTS --- *@
+        <div class="p-5 mb-5 bg-primary text-white rounded-5 shadow-lg text-center">
+            <h1 class="display-3 fw-bold mb-3">Warehouse Application PRO</h1>
+            <p class="lead mb-4">The ultimate solution for inventory tracking and logistics management.</p>
+            <a class="btn btn-light btn-lg px-5 rounded-pill fw-bold text-primary"
+               asp-controller="Account" asp-action="Login">
+                Login to Get Started
+            </a>
+        </div>
+
+        @* STATISTICS COUNTER *@
+        <div class="row text-center g-4">
+            <div class="col-md-4">
+                <h2 class="fw-bold">5,000+</h2>
+                <p class="text-muted">Products Tracked</p>
+            </div>
+            <div class="col-md-4">
+                <h2 class="fw-bold">24/7</h2>
+                <p class="text-muted">Supplier Access</p>
+            </div>
+            <div class="col-md-4">
+                <h2 class="fw-bold">99%</h2>
+                <p class="text-muted">Efficiency Rate</p>
+            </div>
+        </div>
+    }
+</div>

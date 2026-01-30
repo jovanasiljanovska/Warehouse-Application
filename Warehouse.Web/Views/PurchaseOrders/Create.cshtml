@@ -1,0 +1,91 @@
+﻿@using Warehouse.Domain.Domain.Enums
+@using Microsoft.AspNetCore.Mvc.Rendering
+
+@{
+    ViewData["Title"] = "Create Purchase Order";
+    bool isRestock = ViewBag.IsRestockMode ?? false;
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow border-0 rounded-4 overflow-hidden">
+                <div class="card-header bg-primary text-white p-4 text-center border-0">
+                    <h3 class="mb-0 fw-bold">
+                        <i class="bi @(isRestock ? "bi-arrow-repeat" : "bi-plus-circle") me-2"></i>
+                        @(isRestock ? "Restock Product" : "New Purchase Order")
+                    </h3>
+                </div>
+
+                <div class="card-body p-4">
+                    <form asp-action="Create" method="post">
+                        @Html.AntiForgeryToken()
+
+                        <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
+
+                        @if (isRestock)
+                        {
+                            <!-- IMPORTANT: disabled select will NOT submit, so we submit ProductId here -->
+                            <input type="hidden" name="ProductId" value="@ViewBag.SelectedProductId" />
+
+                            <div class="mb-4">
+                                <label class="form-label fw-bold text-secondary">Product</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light"><i class="bi bi-box-seam"></i></span>
+                                    <select class="form-select form-select-lg"
+                                            asp-items="@(ViewData["ProductId"] as SelectList)"
+                                            disabled>
+                                    </select>
+                                </div>
+                                <div class="form-text text-info small">
+                                    <i class="bi bi-lock-fill me-1"></i>Product is locked for this restock.
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="mb-4">
+                                <label class="form-label fw-bold text-secondary">Select Product</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light"><i class="bi bi-box-seam"></i></span>
+                                    <select class="form-select form-select-lg"
+                                            name="ProductId"
+                                            asp-items="@(ViewData["ProductId"] as SelectList)">
+                                        <option value="">-- Choose Product --</option>
+                                    </select>
+                                </div>
+
+                                <span class="text-danger small">@Html.ValidationMessage("ProductId")</span>
+                            </div>
+                        }
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold text-secondary">Quantity</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light"><i class="bi bi-hash"></i></span>
+                                <input class="form-control form-control-lg"
+                                       type="number"
+                                       name="Quantity"
+                                       min="1"
+                                       value="1"
+                                       required />
+                            </div>
+                            <span class="text-danger small">@Html.ValidationMessage("Quantity")</span>
+                        </div>
+
+                        <div class="d-grid gap-2 mt-5">
+                            <button type="submit" class="btn btn-primary btn-lg rounded-pill shadow-sm fw-bold">
+                                Create Order
+                            </button>
+
+                            <a asp-action="Index" class="btn btn-link text-muted mt-2 text-decoration-none">
+                                <i class="bi bi-x-circle me-1"></i> Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

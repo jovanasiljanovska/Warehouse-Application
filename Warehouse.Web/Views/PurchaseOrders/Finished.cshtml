@@ -1,0 +1,98 @@
+﻿@model IEnumerable<Warehouse.Domain.Domain.PurchaseOrder>
+@using Warehouse.Domain.Domain.Enums
+
+@{
+    ViewData["Title"] = "Supplier Order History";
+}
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="display-6 fw-bold text-secondary"><i class="bi bi-folder-check me-2"></i>Order History</h1>
+            <p class="text-muted mb-0">Review completed and historical fulfillments for your clients.</p>
+        </div>
+        <a asp-action="SupplierIndex" class="btn btn-primary rounded-pill px-4 shadow-sm">
+            <i class="bi bi-arrow-left me-1"></i> Active Requests
+        </a>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm bg-white p-3 rounded-4">
+                <div class="d-flex align-items-center">
+                    <div class="p-3 bg-success bg-opacity-10 rounded-3 me-3">
+                        <i class="bi bi-truck text-success fs-4"></i>
+                    </div>
+                    <div>
+                        <small class="text-muted d-block text-uppercase fw-bold">Successfully Delivered</small>
+                        <h4 class="mb-0 fw-bold">@Model.Count(o => o.Status == OrderStatus.Received)</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="bg-light border-bottom">
+                        <tr>
+                            <th class="ps-4 py-3 text-muted fw-bold small">COMPLETION DATE</th>
+                            <th class="text-muted fw-bold small">CLIENT REPRESENTATIVE</th>
+                            <th class="text-muted fw-bold small">FINAL STATUS</th>
+                            <th class="text-muted fw-bold small">SKU COUNT</th>
+                            <th class="text-end pe-4">ARCHIVE</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (!Model.Any())
+                        {
+                            <tr>
+                                <td colspan="5" class="text-center py-5 text-muted">
+                                    <i class="bi bi-archive fs-1 d-block mb-2"></i>
+                                    No historical orders found.
+                                </td>
+                            </tr>
+                        }
+                        @foreach (var o in Model)
+                        {
+                            <tr>
+                                <td class="ps-4">
+                                    <div class="fw-semibold text-dark">@o.DateCreated.ToString("MMM dd, yyyy")</div>
+                                    <small class="text-muted small">ID: @o.Id.ToString().Substring(0, 8)</small>
+                                </td>
+                                <td>
+                                    <span class="text-dark small">@(o.Employee?.UserName ?? o.Employee?.Email ?? "Warehouse Staff")</span>
+                                </td>
+                                <td>
+                                    @if (o.Status == OrderStatus.Received)
+                                    {
+                                        <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-3 py-2 rounded-pill">
+                                            <i class="bi bi-check2-all me-1"></i> Completed
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-light text-muted border px-3 py-2 rounded-pill">
+                                            @o.Status
+                                        </span>
+                                    }
+                                </td>
+                                <td>
+                                    <span class="text-muted">@(o.PurchaseProductInOrders?.Count ?? 0) Items</span>
+                                </td>
+                                <td class="text-end pe-4">
+                                    <a asp-action="SupplierDetails" asp-route-id="@o.Id"
+                                       class="btn btn-outline-secondary btn-sm rounded-pill px-3 shadow-sm transition-all">
+                                        View Manifest
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

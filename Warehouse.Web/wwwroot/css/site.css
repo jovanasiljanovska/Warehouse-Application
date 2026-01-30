@@ -17,10 +17,6 @@ html {
   min-height: 100%;
 }
 
-body {
-  margin-bottom: 60px;
-}
-
 .form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
   color: var(--bs-secondary-color);
   text-align: end;
@@ -29,3 +25,638 @@ body {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
   text-align: start;
 }
+
+/* Typography */
+body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    color: #2d3748; /* Dark Gray instead of Black */
+    background-color: #f7fafc; /* Very light blue-gray background */
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Navbar Polish */
+.navbar {
+    box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+}
+
+.brand-icon {
+    background: #ebf8ff;
+    padding: 6px 10px;
+    border-radius: 8px;
+}
+
+.navbar-brand {
+    font-size: 1.1rem;
+    letter-spacing: -0.5px;
+}
+
+.nav-link {
+    font-size: 0.925rem;
+    color: #4a5568 !important;
+    padding: 0.5rem 1rem !important;
+    border-radius: 6px;
+    transition: all 0.2s;
+}
+
+    .nav-link:hover {
+        background-color: #edf2f7;
+        color: #2b6cb0 !important;
+    }
+
+/* Card Modernization (Used across all pages) */
+.card {
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 12px !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Buttons */
+.btn-primary {
+    background-color: #3182ce;
+    border: none;
+    font-weight: 600;
+}
+
+    .btn-primary:hover {
+        background-color: #2b6cb0;
+        transform: translateY(-1px);
+    }
+
+/* Table Refinement */
+.table {
+    border-color: #edf2f7;
+}
+
+    .table thead th {
+        background-color: #f8fafc;
+        color: #718096;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        letter-spacing: 0.05em;
+        padding: 1rem;
+    }
+
+/* Badges */
+.badge {
+    font-weight: 600;
+    padding: 0.4em 0.8em;
+}
+
+/*Homepage*/
+/* Dashboard Card Effects */
+.dashboard-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-radius: 1.25rem;
+}
+
+    .dashboard-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 1rem 3rem rgba(0,0,0,.1) !important;
+    }
+
+/* Icon Containers */
+.icon-circle {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+/* Soft Background Colors */
+.bg-primary-soft {
+    background-color: rgba(13, 110, 253, 0.1);
+}
+
+.bg-dark-soft {
+    background-color: rgba(33, 37, 41, 0.1);
+}
+
+.bg-success-soft {
+    background-color: rgba(25, 135, 84, 0.1);
+}
+
+/*CUSTOMER SIDE 
+Orders page*/
+/* Order Dashboard Styling */
+.order-card {
+    border-left: 5px solid #0d6efd; /* Accent color on the side */
+    transition: background-color 0.2s ease;
+}
+
+    .order-card:hover {
+        background-color: #f8f9fa;
+    }
+
+.badge {
+    font-weight: 500;
+    padding: 0.5em 0.8em;
+}
+
+.bg-primary-soft {
+    background-color: rgba(13, 110, 253, 0.1);
+    color: #0d6efd;
+}
+/* Order Details Styling */
+.breadcrumb-item a {
+    text-decoration: none;
+    color: #6c757d;
+}
+
+.card-header.bg-primary {
+    background: linear-gradient(45deg, #0d6efd, #004bb5) !important;
+}
+
+.table tfoot {
+    border-top: 2px solid #dee2e6;
+}
+
+/*Cart Styling*/
+.cart-item-card {
+    transition: transform 0.2s ease;
+}
+
+.cart-item-card:hover {
+    background-color: #fafafa;
+}
+
+.cart-item-card img {
+    max-height: 80px;
+    width: 100%;
+    object-fit: cover;
+}
+
+.form-control:focus {
+    border-color: #0d6efd;
+    box-shadow: none;
+}
+
+/*+ and - signs*/
+
+/* Remove default arrows from number input */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type=number] {
+    -moz-appearance: textfield;
+}
+
+/* Style the qty buttons slightly */
+.qty-btn:hover {
+    background-color: #e9ecef !important;
+    color: #0d6efd;
+}
+
+.qty-btn:active {
+    background-color: #dee2e6 !important;
+}
+/* Warehouse Card Styling */
+.warehouse-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border-radius: 12px;
+    background: #ffffff;
+}
+
+    .warehouse-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+    }
+/* Fix description lengths for uniform card heights */
+.line-clamp {
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* Shows only 2 lines of text */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    height: 3rem; /* Matches the 2-line height */
+}
+
+/* Specific button styling for Category view */
+.warehouse-card .btn-primary {
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    transition: all 0.2s;
+}
+
+    .warehouse-card .btn-primary:hover {
+        background-color: #004bb5;
+        box-shadow: 0 4px 8px rgba(13, 110, 253, 0.3);
+    }
+
+/* Warehouse Card Styles */
+.warehouse-card {
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    border-radius: 1rem;
+}
+
+    .warehouse-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 1rem 3rem rgba(0,0,0,0.08) !important;
+    }
+
+/* Image Containers */
+.category-img-wrapper {
+    width: 64px;
+    height: 64px;
+    border-radius: 0.75rem;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+    .category-img-wrapper img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+.category-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Line Clamp to keep cards uniform */
+.line-clamp {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    min-height: 4.5em; /* Ensures cards are equal height even with short text */
+}
+
+/* Transitions for Buttons */
+.transition-all {
+    transition: all 0.2s ease;
+}
+
+.btn-primary:hover {
+    opacity: 0.9;
+}
+
+/* Container for the image */
+.category-image-container {
+    width: 80px; /* Increased size */
+    height: 80px;
+    flex-shrink: 0; /* Prevents the image from squishing */
+}
+
+/* The actual image styling */
+.category-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* This makes the image fill the square perfectly without stretching */
+    border-radius: 12px;
+    border: 2px solid #f8f9fa;
+}
+
+/* Placeholder styling if no image exists */
+.category-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    font-size: 1.5rem;
+}
+
+/* Customizing the Create Button */
+.btn-success {
+    background-color: #28a745;
+    border: none;
+    border-radius: 8px;
+}
+
+.product-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-radius: 15px;
+    overflow: hidden;
+    background: #fff;
+}
+
+    .product-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.1) !important;
+    }
+
+.product-img {
+    height: 200px;
+    object-fit: cover;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.badge {
+    padding: 0.5em 0.8em;
+    font-weight: 500;
+}
+
+/*EMPLOYEE SIDE
+EmployeeIndex*/
+/* Avatar circle for customer initials */
+.avatar-sm {
+    width: 32px;
+    height: 32px;
+    line-height: 32px;
+    border-radius: 50%;
+    text-align: center;
+    font-weight: bold;
+    font-size: 0.8rem;
+}
+
+.bg-primary-soft {
+    background-color: rgba(13, 110, 253, 0.1) !important;
+}
+
+/* Table Hover Effect */
+.table-hover tbody tr:hover {
+    background-color: rgba(0,0,0,0.02);
+    cursor: default;
+}
+
+/* Badge Tweaks */
+.badge i.bi-dot {
+    font-size: 1.2rem;
+    vertical-align: middle;
+    margin-right: -4px;
+}
+
+/*SHIPPED/FINISHED CUSTOMER ORDERS*/
+/* Styling for Finished Orders Table */
+.avatar-sm {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-size: 0.85rem;
+}
+
+.table thead th {
+    font-size: 0.75rem;
+    letter-spacing: 0.05rem;
+}
+
+.table tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+.bg-opacity-10 {
+    --bs-bg-opacity: 0.1;
+}
+
+/* Ensure consistent card rounded corners */
+.rounded-4 {
+    border-radius: 1rem !important;
+}
+
+/*ORDER details, SHIPPING ORDER*/
+/* Layout & Sidebar */
+.breadcrumb-item a {
+    text-decoration: none;
+    color: #6c757d;
+    font-weight: 500;
+}
+
+.card-header {
+    font-size: 0.85rem;
+    letter-spacing: 0.05rem;
+    text-transform: uppercase;
+}
+
+/* Picking List Table */
+.table th {
+    font-size: 0.75rem;
+    color: #6c757d;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Highlighting the Quantity for Pickers */
+.fs-5.fw-bold.text-primary {
+    background: rgba(13, 110, 253, 0.05);
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    display: inline-block;
+    min-width: 80px;
+}
+
+/* Sidebar "Information Card" */
+.card-body label {
+    margin-bottom: 2px;
+}
+
+/* Action Button Hover */
+.btn-success.btn-lg:hover {
+    background-color: #157347;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(25, 135, 84, 0.3) !important;
+}
+
+/* Transition for all interactive elements */
+.btn, .card, .badge {
+    transition: all 0.2s ease-in-out;
+}
+
+/* Custom code styling for ID */
+code.small {
+    background-color: #f8f9fa;
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: #d63384;
+}
+
+/*PURCHASE ORDERS INDEX - EMPLOYEE */
+/* Purchase Order Table Styling */
+.table thead th {
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #495057;
+}
+
+.btn-group .btn {
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+/* Light gray for Delivered/Finished states */
+.table tr.status-delivered {
+    opacity: 0.8;
+    background-color: #fdfdfd;
+}
+
+/* Ensure the Receive button stands out when active */
+.btn-primary {
+    transition: all 0.2s ease;
+}
+
+.btn-primary:hover {
+        box-shadow: 0 4px 12px rgba(13, 110, 253, 0.2);
+    }
+
+/* RECEIVE PAGE */
+/* Highlight table row when verification is checked */
+tr:has(.form-check-input:checked) {
+    background-color: rgba(25, 135, 84, 0.05);
+    transition: background-color 0.3s ease;
+}
+
+.form-check-input:checked {
+    background-color: #198754;
+    border-color: #198754;
+}
+
+/*SUPPLIER SIDE*/
+/*INDEX*/
+/* Supplier Dashboard Specifics */
+.avatar-sm {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+}
+
+/* Row Hover & Interactivity */
+.table-hover tbody tr:hover {
+    background-color: rgba(0, 0, 0, 0.015);
+    transition: background-color 0.2s ease;
+}
+
+/* Badge Refinement */
+.badge {
+    font-weight: 500;
+    letter-spacing: 0.3px;
+    padding: 0.5em 0.8em;
+}
+
+/* Header Text */
+.display-6 {
+    letter-spacing: -1px;
+}
+
+/* Custom Table Header */
+.table thead th {
+    font-size: 0.7rem;
+    letter-spacing: 1px;
+    border-top: none;
+    border-bottom: 2px solid #f8f9fa;
+}
+
+/* Button "Review" Transition */
+.btn-dark {
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+    .btn-dark:hover {
+        transform: translateX(3px);
+        box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    }
+
+/* Card Shadow and Radius */
+.rounded-4 {
+    border-radius: 1rem !important;
+}
+
+.shadow-sm {
+    box-shadow: 0 .125rem .25rem rgba(0,0,0,.04) !important;
+}
+
+/*SUPPLIER DETAILS*/
+/* Card & UI Polish */
+.rounded-4 {
+    border-radius: 1rem !important;
+}
+
+/* Form Transition */
+form {
+    display: block;
+    width: 100%;
+}
+
+/* Action Button Hover States */
+.btn-warning {
+    background-color: #ffc107;
+    border: none;
+}
+
+    .btn-warning:hover {
+        background-color: #e0a800;
+        transform: scale(1.02);
+    }
+
+.btn-primary:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 15px rgba(13, 110, 253, 0.3) !important;
+}
+
+/* Soft background for table headers */
+.bg-light-soft {
+    background-color: #f8fafc;
+}
+
+/* Dashed border for secondary actions */
+.border-dashed {
+    border-style: dashed !important;
+}
+
+/* Hover effect for main action buttons */
+.transition-hover {
+    transition: all 0.2s ease;
+}
+
+    .transition-hover:hover {
+        transform: translateY(-2px);
+        filter: brightness(1.05);
+    }
+
+.breadcrumb-item + .breadcrumb-item::before {
+    font-family: "bootstrap-icons";
+    content: "\F285" !important; /* The chevron-right icon code */
+    font-size: 0.75rem;
+    vertical-align: middle;
+}
+
+/* Ensure the breadcrumb doesn't have weird ghost padding */
+.breadcrumb {
+    display: flex;
+    flex-wrap: wrap;
+    list-style: none;
+}
+/*FINISHED PURCHASE ORDERS*/
+/* History Table Transitions */
+.transition-all {
+    transition: all 0.2s ease-in-out;
+}
+
+.table-hover tbody tr:hover {
+    background-color: #fbfbfb;
+}
+
+/* Specific Badge for Completed Status */
+.bg-success.bg-opacity-10 {
+    background-color: rgba(25, 135, 84, 0.1) !important;
+}
+
+/* Summary Card Radius */
+.rounded-4 {
+    border-radius: 1rem !important;
+}
+
+/* Subtle Table Header */
+.table thead th {
+    font-size: 0.7rem;
+    letter-spacing: 0.05rem;
+    background-color: #fcfcfc;
+}
+

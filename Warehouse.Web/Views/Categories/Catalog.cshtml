@@ -1,0 +1,29 @@
+﻿@model IEnumerable<Warehouse.Domain.Domain.Category>
+
+@{
+    ViewData["Title"] = "Categories";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-3">Choose a category</h2>
+
+    <div class="row">
+        @foreach (var item in Model)
+        {
+            <div class="col-md-4 mb-3">
+                <div class="card p-3 h-100">
+                    <h5 class="mb-2">@item.Name</h5>
+                    <h5 class="mb-2">@item.Description</h5>
+                    @* <h5 class="mb-2">@item.Name</h5> *@
+
+                    <a class="btn btn-outline-primary"
+                       asp-controller="Products"
+                       asp-action="Index"
+                       asp-route-categoryId="@item.Id">
+                        View products
+                    </a>
+                </div>
+            </div>
+        }
+    </div>
+</div>

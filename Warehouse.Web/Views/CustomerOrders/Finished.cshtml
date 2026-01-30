@@ -1,0 +1,95 @@
+﻿@model IEnumerable<Warehouse.Domain.Domain.CustomerOrder>
+@using Warehouse.Domain.Domain.Enums
+
+@{
+    ViewData["Title"] = "Finished Orders";
+}
+
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="display-6 fw-bold text-secondary"><i class="bi bi-archive-fill"></i> Finished Orders</h1>
+            <p class="text-muted mb-0">Historical record of all completed, delivered, or cancelled orders.</p>
+        </div>
+        <a asp-action="EmployeeIndex" class="btn btn-primary rounded-pill px-4 shadow-sm">
+            <i class="bi bi-arrow-left"></i> Back to Queue
+        </a>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card border-0 bg-success bg-opacity-10 text-success p-3 rounded-4">
+                <small class="fw-bold text-uppercase">Delivered</small>
+                <h3 class="mb-0">@Model.Count(o => o.Status == OrderStatus.Shipped)</h3>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 bg-danger bg-opacity-10 text-danger p-3 rounded-4">
+                <small class="fw-bold text-uppercase">Cancelled</small>
+                <h3 class="mb-0">@Model.Count(o => o.Status == OrderStatus.Cancelled)</h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm border-0 rounded-4 overflow-hidden">
+        <div class="card-body p-0">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="bg-light border-bottom">
+                    <tr>
+                        <th class="ps-4 py-3 text-muted fw-bold">COMPLETION DATE</th>
+                        <th class="text-muted fw-bold">CUSTOMER</th>
+                        <th class="text-muted fw-bold">ITEMS</th>
+                        <th class="text-muted fw-bold">FINAL STATUS</th>
+                        <th class="text-end pe-4">DETAILS</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (!Model.Any())
+                    {
+                        <tr>
+                            <td colspan="5" class="text-center py-5">
+                                <span class="text-muted">No finished orders found in the history.</span>
+                            </td>
+                        </tr>
+                    }
+                    @foreach (var o in Model)
+                    {
+                        <tr>
+                            <td class="ps-4">
+                                <div class="fw-semibold text-dark">@o.DateCreated.ToString("MMM dd, yyyy")</div>
+                                <small class="text-muted">@o.DateCreated.ToString("HH:mm")</small>
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="avatar-sm bg-secondary bg-opacity-10 text-secondary me-2">
+                                        <i class="bi bi-person-fill"></i>
+                                    </div>
+                                    <span class="small">@(o.Customer?.Email ?? o.Customer?.UserName ?? "External ID: " + o.CustomerId.ToString().Substring(0, 8))</span>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge bg-light text-dark border">
+                                    <i class="bi bi-list-check"></i> @(o.ProductInOrders?.Count ?? 0) Items
+                                </span>
+                            </td>
+                            <td>
+                                @{
+                                    var statusColor = o.Status == OrderStatus.Shipped ? "bg-success" : "bg-danger";
+                                }
+                                <span class="badge @statusColor px-3 py-2 rounded-pill shadow-none">
+                                    @o.Status
+                                </span>
+                            </td>
+                            <td class="text-end pe-4">
+                                <a asp-action="EmployeeDetails" asp-route-id="@o.Id"
+                                   class="btn btn-outline-secondary btn-sm rounded-pill px-3">
+                                    Review
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

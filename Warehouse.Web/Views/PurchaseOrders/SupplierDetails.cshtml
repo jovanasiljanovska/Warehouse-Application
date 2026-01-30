@@ -1,0 +1,145 @@
+﻿@model Warehouse.Domain.Domain.PurchaseOrder
+@using Warehouse.Domain.Domain.Enums
+
+@{
+    ViewData["Title"] = "Fulfill Request";
+}
+
+<div class="container py-5">
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb bg-transparent p-0">
+            <li class="breadcrumb-item">
+                <a asp-action="SupplierIndex" class="text-decoration-none text-muted">Client Requests</a>
+            </li>
+            <li class="breadcrumb-item active fw-bold text-dark" aria-current="page">
+                Order Fulfillment
+            </li>
+        </ol>
+    </nav>
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger shadow-sm border-0 rounded-3 mb-4">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i> @TempData["Error"]
+        </div>
+    }
+
+    <div class="row g-4">
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm rounded-4 mb-4">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold mb-4 text-dark">Order Overview</h5>
+
+                    <div class="mb-3">
+                        <label class="text-muted small d-block text-uppercase fw-bold">Order ID</label>
+                        <code class="text-primary fw-medium">@Model.Id</code>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="text-muted small d-block text-uppercase fw-bold">Request Date</label>
+                        <span class="text-dark fw-medium">@Model.DateCreated.ToString("MMM dd, yyyy HH:mm")</span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="text-muted small d-block text-uppercase fw-bold">Current Status</label>
+                        <span class="badge @(Model.Status == OrderStatus.Ordered ? "bg-info" : "bg-primary") rounded-pill px-3 py-2 mt-1">
+                            @Model.Status
+                        </span>
+                    </div>
+
+                    <div class="mb-0">
+                        <label class="text-muted small d-block text-uppercase fw-bold">Client Contact</label>
+                        <span class="text-dark fw-medium">@(Model.Employee?.Email ?? "Warehouse Procurement")</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card border-0 shadow-sm rounded-4 bg-white border-top border-4 border-primary">
+                <div class="card-body p-4 text-center">
+                    <h6 class="fw-bold mb-3 text-uppercase small text-muted">Workflow Actions</h6>
+                    <div class="d-grid gap-2">
+                        @if (Model.Status == OrderStatus.Ordered)
+                        {
+                            <form asp-action="Accept" method="post">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="id" value="@Model.Id" />
+                                <button type="submit" class="btn btn-warning w-100 rounded-pill fw-bold py-2 shadow-sm transition-hover">
+                                    <i class="bi bi-check-circle me-1"></i> Accept Request
+                                </button>
+                            </form>
+                        }
+
+                        @if (Model.Status == OrderStatus.Ordered || Model.Status == OrderStatus.Approved)
+                        {
+                            <form asp-action="Ship" method="post">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="id" value="@Model.Id" />
+                                <button type="submit" class="btn btn-primary w-100 rounded-pill fw-bold py-2 shadow-sm transition-hover">
+                                    <i class="bi bi-truck me-1"></i> Dispatch Order
+                                </button>
+                            </form>
+                        }
+
+                        <a asp-action="SupplierIndex" class="btn btn-outline-secondary rounded-pill py-2 mt-2">
+                            <i class="bi bi-arrow-left me-1"></i> Back to List
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+                <div class="card-header bg-white py-3 border-bottom d-flex align-items-center justify-content-between">
+                    <h5 class="mb-0 fw-bold text-dark">
+                        <i class="bi bi-list-task me-2 text-primary"></i>Required Items
+                    </h5>
+                    <span class="badge bg-light text-muted border fw-medium px-3 py-2">
+                        @(Model.PurchaseProductInOrders?.Count ?? 0) Item Positions
+                    </span>
+                </div>
+                <div class="table-responsive">
+                    <table class="table align-middle mb-0">
+                        <thead class="bg-light">
+                            <tr class="text-uppercase small text-muted">
+                                <th class="ps-4 py-3 fw-bold">Product Details</th>
+                                <th class="text-center fw-bold">Quantity</th>
+                                <th class="text-end pe-4 fw-bold">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var line in Model.PurchaseProductInOrders ?? new List<Warehouse.Domain.Domain.PurchaseProductInOrder>())
+                            {
+                                <tr>
+                                    <td class="ps-4 py-3">
+                                        <div class="fw-bold text-dark">@(line.OrderedProduct?.Name ?? "Item ID: " + line.ProductId)</div>
+                                        <small class="text-muted">SKU: @(line.OrderedProduct?.SKU ?? "Pending Assignment")</small>
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="fw-bold text-primary bg-primary bg-opacity-10 px-3 py-2 rounded-3">
+                                            @line.Quantity
+                                        </span>
+                                    </td>
+                                    <td class="text-end pe-4">
+                                        @if (Model.Status == OrderStatus.Received)
+                                        {
+                                            <span class="text-success small fw-bold">
+                                                <i class="bi bi-check-circle-fill me-1"></i> Received
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-success small fw-bold">
+                                                <i class="bi bi-check-lg me-1"></i> Ready to Ship
+                                            </span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

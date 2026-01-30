@@ -1,0 +1,89 @@
+﻿@model IEnumerable<Warehouse.Domain.Domain.PurchaseOrder>
+@using Warehouse.Domain.Domain.Enums
+
+@{
+    ViewData["Title"] = "Purchase Orders";
+}
+
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="display-6 fw-bold text-dark"><i class="bi bi-truck-flatbed"></i> Procurement Log</h1>
+            <p class="text-muted">Track and receive inventory restock orders from suppliers.</p>
+        </div>
+        <a asp-action="Create" class="btn btn-success btn-lg rounded-pill shadow-sm">
+            <i class="bi bi-plus-lg me-1"></i> New Purchase Order
+        </a>
+    </div>
+
+    <div class="card shadow-sm border-0 rounded-4">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="bg-light">
+                        <tr>
+                            <th class="ps-4 py-3">Order Date</th>
+                            <th>Status</th>
+                            <th>Supplier Source</th>
+                            <th>Responsible Employee</th>
+                            <th class="text-end pe-4">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (!Model.Any())
+                        {
+                            <tr>
+                                <td colspan="5" class="text-center py-5 text-muted">
+                                    <i class="bi bi-journal-x fs-2 d-block mb-2"></i>
+                                    No purchase orders found.
+                                </td>
+                            </tr>
+                        }
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td class="ps-4">
+                                    <span class="fw-bold">@item.DateCreated.ToString("MMM dd, yyyy")</span>
+                                    <small class="text-muted d-block">@item.DateCreated.ToString("HH:mm")</small>
+                                </td>
+                                <td>
+                                    @{
+                                        var badgeClass = item.Status switch
+                                        {
+                                            OrderStatus.Ordered => "bg-secondary text-white",
+                                            OrderStatus.Shipped => "bg-warning text-dark",
+                                            OrderStatus.Received => "bg-success text-white",
+                                            _ => "bg-light text-muted"
+                                        };
+                                    }
+                                    <span class="badge @badgeClass px-3 py-2 rounded-pill shadow-none">
+                                        @item.Status
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="fw-semibold">@(item.Supplier?.UserName ?? item.Supplier?.Email ?? "External Supplier")</div>
+                                    <small class="text-muted">ID: @item.SupplierId.ToString().Substring(0, 8)</small>
+                                </td>
+                                <td>
+                                    <span class="small text-muted"><i class="bi bi-person me-1"></i>@(item.Employee?.UserName ?? item.Employee?.Email ?? "System")</span>
+                                </td>
+                                <td class="text-end pe-4">
+                                    <div class="btn-group shadow-sm rounded-pill overflow-hidden">
+                                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-light border-end">Details</a>
+
+                                        @if (item.Status == OrderStatus.Shipped)
+                                        {
+                                            <a asp-action="Receive" asp-route-id="@item.Id" class="btn btn-sm btn-primary px-3">
+                                                <i class="bi bi-download"></i> Receive Stock
+                                            </a>
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

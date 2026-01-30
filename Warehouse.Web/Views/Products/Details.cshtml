@@ -1,0 +1,116 @@
+﻿@model Warehouse.Domain.Domain.Product
+
+@{
+    ViewData["Title"] = "Product Details - " + Model.Name;
+}
+
+<div class="container py-5">
+    <nav aria-label="breadcrumb" class="mb-4">
+        <a asp-action="Index" class="btn btn-link text-decoration-none p-0 text-muted">
+            <i class="bi bi-arrow-left me-1"></i> Back to Inventory
+        </a>
+    </nav>
+
+    <div class="card shadow-sm border-0 rounded-4 overflow-hidden">
+        <div class="row g-0">
+            <div class="col-md-5 bg-light d-flex align-items-center justify-content-center p-4">
+                @if (!string.IsNullOrEmpty(Model.ImageURL))
+                {
+                    <img src="@Model.ImageURL" alt="@Model.Name" class="img-fluid rounded-3 shadow-sm" style="max-height: 400px; object-fit: contain;">
+                }
+                else
+                {
+                    <div class="text-center text-muted">
+                        <i class="bi bi-box-seam display-1"></i>
+                        <p class="mt-2">No image available</p>
+                    </div>
+                }
+            </div>
+
+            <div class="col-md-7">
+                <div class="card-body p-5">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <div>
+                            <span class="badge bg-info text-dark mb-2">@(Model.Category?.Name ?? "General")</span>
+                            <h1 class="fw-bold text-dark mb-1">@Model.Name</h1>
+                            <p class="text-muted mb-4">SKU: <span class="fw-medium">@Model.SKU</span></p>
+                        </div>
+                        <h2 class="text-primary fw-bold">$@Model.UnitPrice</h2>
+                    </div>
+
+                    <hr class="my-4 opacity-25" />
+
+                    <div class="row g-4">
+                        <div class="col-sm-6">
+                            <label class="text-uppercase small fw-bold text-muted d-block mb-1">Supplier</label>
+                            <p class="text-dark mb-0">
+                                <i class="bi bi-truck me-2"></i>@(Model.Supplier?.CompanyName ?? "Not Assigned")
+                            </p>
+                        </div>
+                        <div class="col-sm-6">
+                            @{
+                                var totalStock = Model.StockBalances?.Sum(b => b.Quantity) ?? 0;
+                            }
+                            <label class="text-uppercase small fw-bold text-muted d-block mb-1">Current Stock</label>
+                            <p class="mb-0 @(totalStock < 5 ? "text-danger" : "text-dark") fw-bold">
+                                <i class="bi bi-archive me-2"></i>@totalStock Units
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="mt-5 d-flex gap-2">
+                        @if (User.IsInRole("Employee"))
+                        {
+                            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary rounded-pill px-4">
+                                <i class="bi bi-pencil-square me-2"></i>Edit Details
+                            </a>
+
+                            <button type="button"
+                                    class="btn btn-outline-danger rounded-pill px-4"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#deleteModal"
+                                    data-product-id="@Model.Id"
+                                    data-product-name="@Model.Name">
+                                <i class="bi bi-trash me-2"></i>Delete
+                            </button>
+                        }
+
+                        @if (User.IsInRole("Customer"))
+                        {
+                            <a asp-controller="Carts" asp-action="Add" class="btn btn-primary rounded-pill px-5">
+                                <i class="bi bi-cart-plus me-2"></i>Add to Cart
+                            </a>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (User.IsInRole("Employee"))
+{
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow rounded-4">
+                <div class="modal-header border-0 pt-4 px-4">
+                    <h5 class="modal-title fw-bold">Confirm Deletion</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body px-4">
+                    <p class="text-muted">Are you sure you want to permanently delete <strong>@Model.Name</strong>? This action cannot be undone.</p>
+                </div>
+                <div class="modal-footer border-0 pb-4 px-4">
+                    <div class="d-flex justify-content-end w-100 gap-2">
+                        <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Cancel</button>
+                        <form asp-action="Delete" method="post" class="m-0 p-0">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="id" value="@Model.Id" />
+                            <button type="submit" class="btn btn-danger rounded-pill px-4 fw-bold">Delete Product</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}

@@ -3,46 +3,106 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Warehouse.Web</title>
-    <script type="importmap"></script>
+    <title>@ViewData["Title"] - Warehouse Management</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/Warehouse.Web.styles.css" asp-append-version="true" />
 </head>
-<body>
+<body class="bg-light-soft">
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Warehouse.Web</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
+        <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom py-3 mb-4 sticky-top">
+            <div class="container">
+                <a class="navbar-brand d-flex align-items-center fw-bold text-dark" asp-controller="Home" asp-action="Index">
+                    <div class="brand-icon me-2">
+                        <i class="bi bi-box-fill text-primary"></i>
+                    </div>
+                    <span>WAREHOUSE<span class="text-primary">CORE</span></span>
+                </a>
+
+                <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse">
+                    <i class="bi bi-list fs-2"></i>
                 </button>
+
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
+                    <ul class="navbar-nav flex-grow-1 ms-lg-5">
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            @if (User.IsInRole("Customer"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Categories" asp-action="Index">Shop Catalog</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="CustomerOrders" asp-action="Index">My Orders</a>
+                                </li>
+                            }
+                            else if (User.IsInRole("Employee"))
+                            {
+                                <li class="nav-item me-2">
+                                    <a class="nav-link fw-medium" asp-controller="CustomerOrders" asp-action="EmployeeIndex">
+                                        <i class="bi bi-send-check me-1"></i> Fulfillment
+                                    </a>
+                                </li>
+                                <li class="nav-item me-2">
+                                    <a class="nav-link fw-medium" asp-controller="PurchaseOrders" asp-action="Index">
+                                        <i class="bi bi-truck me-1"></i> Procurement
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link fw-medium" asp-controller="Products" asp-action="InventoryDashboard">
+                                        <i class="bi bi-boxes me-1"></i> Inventory
+                                    </a>
+                                </li>
+                            }
+                            else if (User.IsInRole("Supplier"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="PurchaseOrders" asp-action="SupplierIndex">Incoming Requests</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="PurchaseOrders" asp-action="Finished">History</a>
+                                </li>
+                                <li>
+                                    <a asp-controller="Products" asp-action="ApiCategories" class="btn btn-outline-primary">
+                                        Import from API
+                                    </a>
+                                </li>
+                            }
+                        }
                     </ul>
-                    <partial name="_LoginPartial" />
+
+                    <div class="d-flex align-items-center gap-2">
+                        @if (User.IsInRole("Customer"))
+                        {
+                            <a class="btn btn-outline-primary rounded-pill px-3 py-1 me-2" asp-controller="Carts" asp-action="Index">
+                                <i class="bi bi-cart2 me-1"></i> Cart
+                            </a>
+                        }
+                        <partial name="_LoginPartial" />
+                    </div>
                 </div>
             </div>
         </nav>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
+
+    <div class="container pb-5">
+        <main role="main">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2026 - Warehouse.Web - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    <footer class="bg-white border-top py-4 mt-auto">
+        <div class="container d-flex flex-column flex-md-row justify-content-between align-items-center text-muted small">
+            <div>&copy; 2026 WarehouseCore Dashboard. All rights reserved.</div>
+            <div class="d-flex gap-3 mt-2 mt-md-0">
+                <a asp-action="Privacy" class="text-decoration-none text-muted">Privacy</a>
+                <a href="#" class="text-decoration-none text-muted">Terms</a>
+                <a href="#" class="text-decoration-none text-muted">System Status</a>
+            </div>
         </div>
     </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

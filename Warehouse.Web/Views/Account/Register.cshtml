@@ -1,0 +1,82 @@
+﻿@model Warehouse.Web.Models.Account.RegisterViewModel
+@{
+    ViewData["Title"] = "Register";
+}
+
+<h1>Register</h1>
+
+<form asp-action="Register" method="post">
+    @Html.AntiForgeryToken()
+
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <div class="mb-2">
+        <label asp-for="Email"></label>
+        <input asp-for="Email" class="form-control" />
+        <span asp-validation-for="Email" class="text-danger"></span>
+    </div>
+
+    <div class="mb-2">
+        <label asp-for="UserName"></label>
+        <input asp-for="UserName" class="form-control" />
+        <span asp-validation-for="UserName" class="text-danger"></span>
+    </div>
+
+    <div class="mb-2">
+        <label asp-for="FirstName"></label>
+        <input asp-for="FirstName" class="form-control" />
+    </div>
+
+    <div class="mb-2">
+        <label asp-for="LastName"></label>
+        <input asp-for="LastName" class="form-control" />
+    </div>
+
+    <div class="mb-2">
+        <label asp-for="Role"></label>
+        <select asp-for="Role" class="form-select" id="roleSelect">
+            <option value="Customer">Customer</option>
+            <option value="Supplier">Supplier</option>
+            <option value="Employee">Employee</option>
+        </select>
+        <span asp-validation-for="Role" class="text-danger"></span>
+    </div>
+
+    <div class="mb-2" id="companyNameBox" style="display:none;">
+        <label asp-for="CompanyName"></label>
+        <input asp-for="CompanyName" class="form-control" />
+    </div>
+
+    <div class="mb-2">
+        <label asp-for="Password"></label>
+        <input asp-for="Password" class="form-control" />
+        <span asp-validation-for="Password" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="ConfirmPassword"></label>
+        <input asp-for="ConfirmPassword" class="form-control" />
+        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+    </div>
+
+    <button class="btn btn-primary" type="submit">Register</button>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        const roleSelect = document.getElementById("roleSelect");
+        const companyBox = document.getElementById("companyNameBox");
+
+        function toggleCompany() {
+            if (roleSelect.value === "Supplier") {
+                companyBox.style.display = "block";
+            } else {
+                companyBox.style.display = "none";
+            }
+        }
+
+        roleSelect.addEventListener("change", toggleCompany);
+        toggleCompany();
+    </script>
+}

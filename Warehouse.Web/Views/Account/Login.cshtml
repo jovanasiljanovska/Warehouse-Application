@@ -1,0 +1,35 @@
+﻿@model Warehouse.Web.Models.Account.LoginViewModel
+@{
+    ViewData["Title"] = "Login";
+}
+
+<h1>Login</h1>
+
+<form asp-action="Login" method="post">
+    @Html.AntiForgeryToken()
+
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <div class="mb-2">
+        <label asp-for="EmailOrUserName">Email or Username</label>
+        <input asp-for="EmailOrUserName" class="form-control" />
+        <span asp-validation-for="EmailOrUserName" class="text-danger"></span>
+    </div>
+
+    <div class="mb-2">
+        <label asp-for="Password"></label>
+        <input asp-for="Password" class="form-control" />
+        <span asp-validation-for="Password" class="text-danger"></span>
+    </div>
+
+    <div class="form-check mb-3">
+        <input asp-for="RememberMe" class="form-check-input" />
+        <label asp-for="RememberMe" class="form-check-label">Remember me</label>
+    </div>
+
+    <button class="btn btn-primary" type="submit">Login</button>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

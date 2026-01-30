@@ -1,0 +1,102 @@
+﻿@model Warehouse.Domain.Domain.CustomerOrder
+@using Warehouse.Domain.Domain.Enums
+
+@{
+    ViewData["Title"] = "Order Details";
+    var orderTotal = Model.ProductInOrders?.Sum(line => (line.OrderedProduct?.UnitPrice ?? 0) * line.Quantity) ?? 0;
+}
+
+<div class="container py-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-action="Index">My Orders</a></li>
+            <li class="breadcrumb-item active">Order #@Model.Id.ToString().Substring(0, 8)</li>
+        </ol>
+    </nav>
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger shadow-sm">@TempData["Error"]</div>
+    }
+
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header bg-primary text-white p-4">
+            <div class="d-flex justify-content-between align-items-center">
+                <h2 class="mb-0">Order Summary</h2>
+                <span class="badge bg-light text-primary fs-6">@Model.Status</span>
+            </div>
+        </div>
+        <div class="card-body p-4">
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label class="text-muted small d-block">ORDER ID</label>
+                    <span class="fw-bold">@Model.Id</span>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="text-muted small d-block">PLACED ON</label>
+                    <span class="fw-bold">@Model.DateCreated.ToString("f")</span>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="text-muted small d-block">TOTAL AMOUNT</label>
+                    <span class="fw-bold text-success fs-5">$@orderTotal.ToString("F2")</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="ps-4">Product</th>
+                            <th>SKU</th>
+                            <th class="text-center">Quantity</th>
+                            <th class="text-end">Unit Price</th>
+                            <th class="text-end pe-4">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var line in Model.ProductInOrders ?? new List<Warehouse.Domain.Domain.ProductInOrder>())
+                        {
+                            var unitPrice = line.OrderedProduct?.UnitPrice ?? 0;
+                            var lineTotal = unitPrice * line.Quantity;
+                            <tr>
+                                <td class="ps-4 fw-bold">@(line.OrderedProduct?.Name ?? "Product " + line.ProductId)</td>
+                                <td class="text-muted">@(line.OrderedProduct?.SKU ?? "—")</td>
+                                <td class="text-center">@line.Quantity</td>
+                                <td class="text-end">$@unitPrice.ToString("F2")</td>
+                                <td class="text-end fw-bold pe-4">$@lineTotal.ToString("F2")</td>
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot class="table-light">
+                        <tr>
+                            <td colspan="4" class="text-end fw-bold">Grand Total:</td>
+                            <td class="text-end fw-bold pe-4 text-primary fs-5">$@orderTotal.ToString("F2")</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-between">
+        <a asp-action="Index" class="btn btn-outline-secondary rounded-pill px-4">
+            <i class="bi bi-arrow-left"></i> Back to History
+        </a>
+
+        @if (Model.Status == OrderStatus.Ordered)
+        {
+            <form asp-action="Cancel" method="post" class="d-inline">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="id" value="@Model.Id" />
+                <button type="submit" class="btn btn-danger rounded-pill px-4"
+                        onclick="return confirm('Are you sure you want to cancel this order?');">
+                    Cancel Order
+                </button>
+            </form>
+        }
+    </div>
+</div>

@@ -1,3 +1,6 @@
 <Solution>
+  <Project Path="Warehouse.Domain/Warehouse.Domain.csproj" />
+  <Project Path="Warehouse.Repository/Warehouse.Repository.csproj" />
+  <Project Path="Warehouse.Service/Warehouse.Service.csproj" />
   <Project Path="Warehouse.Web/Warehouse.Web.csproj" />
 </Solution>

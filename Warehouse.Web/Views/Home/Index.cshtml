@@ -1,8 +1,174 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
+    var name = (string?)ViewData["DisplayName"] ?? User.Identity?.Name ?? "Guest";
+    bool isAuthenticated = User.Identity?.IsAuthenticated ?? false;
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<style>
+    .hero-gradient {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        border-radius: 2rem;
+    }
+
+    .icon-box {
+        width: 60px;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 15px;
+        margin: 0 auto 1.5rem;
+    }
+
+    .bg-primary-soft {
+        background-color: rgba(13, 110, 253, 0.1);
+    }
+
+    .bg-success-soft {
+        background-color: rgba(25, 135, 84, 0.1);
+    }
+
+    .bg-info-soft {
+        background-color: rgba(13, 202, 240, 0.1);
+    }
+</style>
+
+<div class="container py-5">
+    @* --- HERO SECTION --- *@
+    <div class="p-5 mb-5 hero-gradient shadow-sm border-0 position-relative overflow-hidden">
+        <div class="row align-items-center position-relative" style="z-index: 2;">
+            <div class="col-lg-8 py-3">
+                <h1 class="display-3 fw-bold text-primary mb-3">Warehouse Management</h1>
+                <p class="fs-4 text-muted mb-4">
+                    @if (isAuthenticated)
+                    {
+                        <span>Welcome back, <span class="text-dark fw-semibold">@name</span>! Manage inventory, track orders, and coordinate logistics.</span>
+                    }
+                    else
+                    {
+                        <span>Efficiency in every shelf. A comprehensive solution for modern inventory control and distribution.</span>
+                    }
+                </p>
+
+                @if (!isAuthenticated)
+                {
+                    <div class="d-flex gap-3">
+                        <a class="btn btn-primary btn-lg px-5 rounded-pill shadow-sm" asp-area="Identity" asp-page="/Account/Login">Login to Access</a>
+                        <a class="btn btn-outline-secondary btn-lg px-4 rounded-pill" href="#features">Learn More</a>
+                    </div>
+                }
+            </div>
+            <div class="col-lg-4 d-none d-lg-block text-center">
+                <span style="font-size: 10rem; opacity: 0.1;">📦</span>
+            </div>
+        </div>
+    </div>
+
+    @* --- DASHBOARD CARDS (For Authenticated Users) --- *@
+    <div class="row g-4 justify-content-center">
+        @if (User.IsInRole("Customer"))
+        {
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 border-0 shadow-sm dashboard-card hover-lift">
+                    <div class="card-body text-center p-4">
+                        <div class="icon-circle bg-primary-soft text-primary mb-3"><span class="fs-1">🛒</span></div>
+                        <h3 class="fw-bold">Shopping</h3>
+                        <p class="text-muted">Browse our extensive inventory and place your orders today.</p>
+                        <a class="btn btn-primary w-100 rounded-pill" asp-controller="Categories" asp-action="Index">Start ordering!</a>
+                    </div>
+                </div>
+            </div>
+        }
+
+        @if (User.IsInRole("Employee"))
+        {
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 border-0 shadow-sm dashboard-card hover-lift">
+                    <div class="card-body text-center p-4">
+                        <div class="icon-circle bg-dark-soft text-dark mb-3"><span class="fs-1">📊</span></div>
+                        <h3 class="fw-bold">Management</h3>
+                        <p class="text-muted">Access the employee panel to restock items and manage warehouse flows.</p>
+                        <a class="btn btn-dark w-100 rounded-pill" asp-controller="PurchaseOrders" asp-action="Index">Employee panel</a>
+                    </div>
+                </div>
+            </div>
+        }
+
+        @if (User.IsInRole("Supplier"))
+        {
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 border-0 shadow-sm dashboard-card hover-lift">
+                    <div class="card-body text-center p-4">
+                        <div class="icon-circle bg-success-soft text-success mb-3"><span class="fs-1">🚚</span></div>
+                        <h3 class="fw-bold">Distribution</h3>
+                        <p class="text-muted">View pending employee orders and update shipping statuses.</p>
+                        <a class="btn btn-success w-100 rounded-pill" asp-controller="PurchaseOrders" asp-action="SupplierIndex">Supplier panel</a>
+                    </div>
+                </div>
+            </div>
+        }
+
+        @* --- GUEST FEATURE GRID (Only shown when not logged in) --- *@
+        @if (!isAuthenticated)
+        {
+            @* --- STATISTICS COUNTER --- *@
+            <div class="row g-4 mt-5 mb-5 text-center">
+                <div class="col-6 col-md-3">
+                    <div class="p-3">
+                        <h2 class="fw-bold text-primary mb-0">5,000+</h2>
+                        <p class="text-muted small uppercase fw-semibold">SKUs Managed</p>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="p-3">
+                        <h2 class="fw-bold text-primary mb-0">99.9%</h2>
+                        <p class="text-muted small uppercase fw-semibold">Inventory Accuracy</p>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="p-3">
+                        <h2 class="fw-bold text-primary mb-0">24/7</h2>
+                        <p class="text-muted small uppercase fw-semibold">Supplier Portal</p>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="p-3">
+                        <h2 class="fw-bold text-primary mb-0">15m</h2>
+                        <p class="text-muted small uppercase fw-semibold">Avg. Processing</p>
+                    </div>
+                </div>
+            </div>
+
+            @* --- DETAILED FEATURE GRID --- *@
+            <div id="features" class="row g-4 mt-2">
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 bg-white shadow-sm p-4 text-center">
+                        <div class="icon-box bg-primary-soft text-primary mx-auto">
+                            <i class="bi bi-lightning-fill fs-3"></i>
+                        </div>
+                        <h5 class="fw-bold">Real-time Tracking</h5>
+                        <p class="small text-muted mb-0">Monitor inventory levels and shipment statuses as they happen with zero latency.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 bg-white shadow-sm p-4 text-center">
+                        <div class="icon-box bg-success-soft text-success mx-auto">
+                            <i class="bi bi-shield-lock-fill fs-3"></i>
+                        </div>
+                        <h5 class="fw-bold">Role-Based Access</h5>
+                        <p class="small text-muted mb-0">Highly secure portals specifically designed for Customers, Employees, and Suppliers.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 bg-white shadow-sm p-4 text-center">
+                        <div class="icon-box bg-info-soft text-info mx-auto">
+                            <i class="bi bi-graph-up fs-3"></i>
+                        </div>
+                        <h5 class="fw-bold">Seamless Logistics</h5>
+                        <p class="small text-muted mb-0">Automated workflows that guide a product from the supplier to the warehouse shelf.</p>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
 </div>
