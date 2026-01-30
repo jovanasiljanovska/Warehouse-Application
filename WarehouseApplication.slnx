@@ -1,4 +1,5 @@
 <Solution>
+  <Folder Name="/Solution Items/" />
   <Project Path="Warehouse.Domain/Warehouse.Domain.csproj" />
   <Project Path="Warehouse.Repository/Warehouse.Repository.csproj" />
   <Project Path="Warehouse.Service/Warehouse.Service.csproj" />
