@@ -13,7 +13,7 @@ public class ExternalImportController : Controller
     private readonly IFakeStoreCatalogService _fs;
     private readonly ICategoryService _categories;
     private readonly IProductService _products;
-    private readonly IInventoryService _inventory;  //  ќе го користиме за stock
+    private readonly IInventoryService _inventory;  
 
     public ExternalImportController(
         IFakeStoreCatalogService fs,
@@ -47,11 +47,11 @@ public class ExternalImportController : Controller
         var item = _fs.GetByExternalId(externalId);
         if (item == null) return NotFound();
 
-        // ✅ SupplierId = logged in supplier
+        
         var supplierId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         if (string.IsNullOrWhiteSpace(supplierId)) return Unauthorized();
 
-        // ✅ Category: find or create (опција 1 - во контролер)
+        
         var cat = _categories.GetAll()
             .FirstOrDefault(c => c.Name != null &&
                                  c.Name.Equals(item.CategoryName, StringComparison.OrdinalIgnoreCase));
@@ -62,7 +62,7 @@ public class ExternalImportController : Controller
             _categories.Insert(cat);
         }
 
-        // ✅ Avoid duplicates by SKU = external id
+        
         var exists = _products.GetAll().Any(p => p.SKU == item.ExternalId);
         if (exists)
         {
@@ -70,7 +70,7 @@ public class ExternalImportController : Controller
             return RedirectToAction(nameof(Categories));
         }
 
-        // ✅ Create product with supplier
+        
         var p = new Product
         {
             Id = Guid.NewGuid(),
@@ -79,12 +79,12 @@ public class ExternalImportController : Controller
             CategoryId = cat.Id,
             ImageURL = item.ImageUrl,
             UnitPrice = item.UnitPrice,
-            SupplierId = supplierId //  ова ќе ја пополни Supplier навигацијата
+            SupplierId = supplierId 
         };
 
         _products.Insert(p);
 
-        // ✅ Initial stock = 10, initial location = Shelves
+        
         _inventory.SetInitialStock(p.Id, 10, LocationType.Shelves);
 
         TempData["Success"] = $"Imported: {p.Name} (Stock: 10, Shelves)";

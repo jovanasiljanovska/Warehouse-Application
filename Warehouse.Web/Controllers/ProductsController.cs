@@ -36,17 +36,17 @@ namespace Warehouse.Web.Controllers
         // GET: Products
         public IActionResult Index(string search, Guid? categoryId) 
         {
-            // 2. Start with all products (as IQueryable or IEnumerable)
+            
             var products = _productService.GetAll().AsEnumerable();
 
-            // 3. Filter by Search if text is provided
+            
             if (!string.IsNullOrEmpty(search))
             {
                 products = products.Where(p => (p.Name != null && p.Name.Contains(search, StringComparison.OrdinalIgnoreCase))
                                             || (p.SKU != null && p.SKU.Contains(search, StringComparison.OrdinalIgnoreCase)));
             }
 
-            // 4. Filter by Category if ID is provided
+         
             if (categoryId.HasValue)
             {
                 products = products.Where(p => p.CategoryId == categoryId.Value);
@@ -193,7 +193,7 @@ namespace Warehouse.Web.Controllers
         public IActionResult ApiCategories()
         {
             var cats = _fs.GetCategories();
-            return View(cats); // Views/Products/ApiCategories.cshtml
+            return View(cats); 
         }
 
         [Authorize(Roles = "Supplier")]
@@ -204,7 +204,7 @@ namespace Warehouse.Web.Controllers
 
             ViewData["ApiCategory"] = category;
             var items = _fs.GetProductsByCategory(category);
-            return View(items); // Views/Products/ApiProducts.cshtml
+            return View(items); 
         }
 
 
@@ -216,11 +216,11 @@ namespace Warehouse.Web.Controllers
             var item = _fs.GetByExternalId(externalId);
             if (item == null) return NotFound();
 
-            // ✅ SupplierId = logged in supplier
+            
             var supplierId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (string.IsNullOrWhiteSpace(supplierId)) return Unauthorized();
 
-            // ✅ Category: find or create (опција 1 - во контролер)
+            
             var cat = _categoryService.GetAll()
                 .FirstOrDefault(c => c.Name != null &&
                                      c.Name.Equals(item.CategoryName, StringComparison.OrdinalIgnoreCase));
@@ -231,7 +231,7 @@ namespace Warehouse.Web.Controllers
                 _categoryService.Insert(cat);
             }
 
-            // ✅ Avoid duplicates by SKU = external id
+            
             var exists = _productService.GetAll().Any(p => p.SKU == item.ExternalId);
             if (exists)
             {
@@ -239,7 +239,7 @@ namespace Warehouse.Web.Controllers
                 return RedirectToAction(nameof(_productService));
             }
 
-            // ✅ Create product with supplier
+            
             var p = new Product
             {
                 Id = Guid.NewGuid(),
@@ -248,12 +248,12 @@ namespace Warehouse.Web.Controllers
                 CategoryId = cat.Id,
                 ImageURL = item.ImageUrl,
                 UnitPrice = item.UnitPrice,
-                SupplierId = supplierId //  ова ќе ја пополни Supplier навигацијата
+                SupplierId = supplierId 
             };
 
             _productService.Insert(p);
 
-            // ✅ Initial stock = 10, initial location = Shelves
+            
             _inventoryService.SetInitialStock(p.Id, 10, LocationType.Shelves);
 
             TempData["Success"] = $"Imported: {p.Name} (Stock: 10, Shelves)";
@@ -267,7 +267,7 @@ namespace Warehouse.Web.Controllers
         {
             if (string.IsNullOrWhiteSpace(apiCategory)) return BadRequest("Category name is required.");
 
-            // 1. Get all items from the external service for this category
+           
             var items = _fs.GetProductsByCategory(apiCategory);
             if (items == null || !items.Any())
             {
@@ -275,7 +275,7 @@ namespace Warehouse.Web.Controllers
                 return RedirectToAction(nameof(ApiCategories));
             }
 
-            // 2. Identify the logged-in supplier
+           
             var supplierId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (string.IsNullOrWhiteSpace(supplierId)) return Unauthorized();
 
@@ -284,7 +284,7 @@ namespace Warehouse.Web.Controllers
 
             foreach (var item in items)
             {
-                // 3. Avoid duplicates by SKU = external id
+                
                 var exists = _productService.GetAll().Any(p => p.SKU == item.ExternalId);
                 if (exists)
                 {
@@ -292,7 +292,7 @@ namespace Warehouse.Web.Controllers
                     continue;
                 }
 
-                // 4. Category: find or create
+               
                 var cat = _categoryService.GetAll()
                     .FirstOrDefault(c => c.Name != null &&
                                          c.Name.Equals(item.CategoryName, StringComparison.OrdinalIgnoreCase));
@@ -303,7 +303,7 @@ namespace Warehouse.Web.Controllers
                     _categoryService.Insert(cat);
                 }
 
-                // 5. Create product
+                
                 var p = new Product
                 {
                     Id = Guid.NewGuid(),
@@ -317,13 +317,13 @@ namespace Warehouse.Web.Controllers
 
                 _productService.Insert(p);
 
-                // 6. Initial stock setup
+                
                 _inventoryService.SetInitialStock(p.Id, 10, LocationType.Shelves);
 
                 importedCount++;
             }
 
-            // 7. Feedback to user
+            
             if (importedCount > 0)
             {
                 TempData["Success"] = $"Successfully imported {importedCount} items to {apiCategory}. (Skipped {skippedCount} duplicates)";
