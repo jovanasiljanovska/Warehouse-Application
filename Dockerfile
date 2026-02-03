@@ -1,21 +1,19 @@
-# 1. Use the .NET 8 SDK to build
+# 1. Use the .NET 8 SDK to build the app
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
-# 2. Copy everything from your GitHub root into the container
+# 2. Copy the project files and restore dependencies
 COPY . .
+RUN dotnet restore
 
-# 3. Restore dependencies specifically for the Web project
-# This avoids the "Specify a project file" error
-RUN dotnet restore "Warehouse.Web/Warehouse.Web.csproj"
+# 3. Publish the app in Release mode
+RUN dotnet publish -c Release -o /app/publish
 
-# 4. Publish the project
-RUN dotnet publish "Warehouse.Web/Warehouse.Web.csproj" -c Release -o /app/publish
-
-# 5. Build the final runtime image
+# 4. Use the ASP.NET runtime image for the final container
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
 WORKDIR /app
 COPY --from=build /app/publish .
 
-# 6. Start the app (Note: Ensure the DLL name matches your project output)
+# 5. Tell the container to start your specific DLL
+# Replace 'Warehouse.Web.dll' with your actual DLL name if different
 ENTRYPOINT ["dotnet", "Warehouse.Web.dll"]
