@@ -1,19 +1,26 @@
-# 1. Use the .NET 8 SDK to build the app
+# Stage 1: Build
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
-# 2. Copy the project files and restore dependencies
+# Copy all .csproj files first to cache restore layers
+COPY ["Warehouse.Web/Warehouse.Web.csproj", "Warehouse.Web/"]
+COPY ["Warehouse.Service/Warehouse.Service.csproj", "Warehouse.Service/"]
+COPY ["Warehouse.Repository/Warehouse.Repository.csproj", "Warehouse.Repository/"]
+COPY ["Warehouse.Domain/Warehouse.Domain.csproj", "Warehouse.Domain/"]
+
+RUN dotnet restore "Warehouse.Web/Warehouse.Web.csproj"
+
+# Copy everything else and build
 COPY . .
-RUN dotnet restore
+WORKDIR "/src/Warehouse.Web"
+RUN dotnet build "Warehouse.Web.csproj" -c Release -o /app/build
 
-# 3. Publish the app in Release mode
-RUN dotnet publish -c Release -o /app/publish
+# Stage 2: Publish
+FROM build AS publish
+RUN dotnet publish "Warehouse.Web.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
-# 4. Use the ASP.NET runtime image for the final container
-FROM mcr.microsoft.com/dotnet/aspnet:8.0
+# Stage 3: Final Runtime Image
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
 WORKDIR /app
-COPY --from=build /app/publish .
-
-# 5. Tell the container to start your specific DLL
-# Replace 'Warehouse.Web.dll' with your actual DLL name if different
+COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "Warehouse.Web.dll"]

@@ -51,23 +51,31 @@ builder.Services.AddHttpClient<IFakeStoreCatalogService, FakeStoreCatalogService
 
 var app = builder.Build();
 
-//  Role seeding works now because AddRoles<IdentityRole>() exists
-using (var scope = app.Services.CreateScope())
+if (!app.Environment.IsEnvironment("Testing"))
 {
-    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+    //using var scope = app.Services.CreateScope();
+    //var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
-    string[] roles = { "Customer", "Employee", "Supplier" };
-
-    foreach (var role in roles)
+    //  Role seeding works now because AddRoles<IdentityRole>() exists
+    using (var scope = app.Services.CreateScope())
     {
-        if (!await roleManager.RoleExistsAsync(role))
+        var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+
+        string[] roles = { "Customer", "Employee", "Supplier" };
+
+        foreach (var role in roles)
         {
-            await roleManager.CreateAsync(new IdentityRole(role));
+            if (!await roleManager.RoleExistsAsync(role))
+            {
+                await roleManager.CreateAsync(new IdentityRole(role));
+            }
         }
     }
 }
 
-if (app.Environment.IsDevelopment())
+
+
+if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("Testing"))
 {
     app.UseMigrationsEndPoint();
 }

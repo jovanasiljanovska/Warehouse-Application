@@ -3,5 +3,8 @@
   <Project Path="Warehouse.Domain/Warehouse.Domain.csproj" />
   <Project Path="Warehouse.Repository/Warehouse.Repository.csproj" />
   <Project Path="Warehouse.Service/Warehouse.Service.csproj" />
+  <Project Path="Warehouse.Tests.E2E/Warehouse.Tests.E2E.csproj" Id="70dc593a-72fa-48eb-8e11-1c09c9ac7ce4" />
+  <Project Path="Warehouse.Tests.Integration/Warehouse.Tests.Integration.csproj" Id="5617bd9b-52e3-41ee-bf2b-835af5da72e3" />
+  <Project Path="Warehouse.Tests.Unit/Warehouse.Tests.Unit.csproj" Id="be4b5ec4-68cb-4dbb-8a76-39ec17c29f32" />
   <Project Path="Warehouse.Web/Warehouse.Web.csproj" />
 </Solution>

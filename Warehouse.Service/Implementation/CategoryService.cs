@@ -49,7 +49,7 @@ public class CategoryService : ICategoryService
         );
 
         if (product == null)
-            throw new Exception("Product not found.");
+            throw new Exception("Category not found.");
 
         return _categoryRepo.Delete(product);
     }
